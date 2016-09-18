@@ -66,14 +66,47 @@
 	import com.alibaba.cloudapi.client.*
 	import com.alibaba.cloudapi.client.constant*
 	
+### 3.3 SDK依赖的开源库
 
-### 3.3 调用Demo
+本SDK依赖了okhttp3开源组件，版本号是3.4.1，请引用sdk代码的时候，务必注意在你项目的build.gradle中dependencies中配置okhttp组件：
+
+
+	apply plugin: 'com.android.application'
+	
+	android {
+	    compileSdkVersion 24
+	    buildToolsVersion "24.0.2"
+	
+	    defaultConfig {
+	        applicationId "com.alibaba.cloudapi.client"
+	        minSdkVersion 15
+	        targetSdkVersion 24
+	        versionCode 1
+	        versionName "1.0"
+	    }
+	    buildTypes {
+	        release {
+	            minifyEnabled false
+	            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+	        }
+	    }
+	}
+	
+	dependencies {
+	    compile fileTree(include: ['*.jar'], dir: 'libs')
+	    testCompile 'junit:junit:4.12'
+	    compile 'com.android.support:appcompat-v7:24.2.0'
+	    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+	}
+	
+
+### 3.4 调用Demo
 
 然后可以像MainActivity.java中的各个方法一样调用HttpUtil类发送各种类型的Http请求。  
 **需要特别注意的是，如果网关检测到请求不合法，或者网关、后端服务器出现故障，错误描述信息会在HTTP应答的名字为X-Ca-Error-Message头信息中返回，部分常见的错误信息可以在下面这个网址看到详细解释：  
 https://help.aliyun.com/document_detail/43800.html**
 
-#### 3.3.1 Http Get
+#### 3.4.1 Http Get
 
 	public void sendHttpGet(View view) {
 
@@ -119,7 +152,7 @@ https://help.aliyun.com/document_detail/43800.html**
         new Thread(runnable).start();
     }
 	
-#### 3.3.2 Http Post Form
+#### 3.4.2 Http Post Form
 
 	public void sendHttpPostForm(View view) {
 
@@ -172,7 +205,7 @@ https://help.aliyun.com/document_detail/43800.html**
     }
 
 
-#### 3.3.3 Http Post Bytes
+#### 3.4.3 Http Post Bytes
 
 	public void sendHttpPostBytes(View view) {
 
@@ -229,7 +262,7 @@ https://help.aliyun.com/document_detail/43800.html**
     }
 
 	
-####3.3.4 Http Put Bytes
+####3.4.4 Http Put Bytes
 
 	public void sendHttpPutBytes(View view) {
 
@@ -278,7 +311,7 @@ https://help.aliyun.com/document_detail/43800.html**
         new Thread(runnable).start();
     }
 	
-#### 3.3.5 Http Put Bytes
+#### 3.4.5 Http Put Bytes
 	
 	public void sendHttpDelete(View view) {
 
