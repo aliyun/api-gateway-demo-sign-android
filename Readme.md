@@ -10,12 +10,12 @@
 	* SignUtil		`签名的实现类`
 	* AppConfiguration	`所有SDK的配置设置`
 	* com.alibaba.cloudapi.client.constant
-		* ContentType.h	`常用HTTP Content-Type常量`
-		* HttpHeader.h	`HTTP头常量`
-		* HttpMethod.h	`HTTP方法常量`
-		* HttpSchema.h	`HTTP Schema常量`
-		* Constants.h		`通用常量`
-		* SystemHeader.h	`系统HTTP头常量`
+		* ContentType	`常用HTTP Content-Type常量`
+		* HttpHeader	`HTTP头常量`
+		* HttpMethod	`HTTP方法常量`
+		* HttpSchema	`HTTP Schema常量`
+		* Constants		`通用常量`
+		* SystemHeader	`系统HTTP头常量`
 
 **SDK调用文件**  
 
