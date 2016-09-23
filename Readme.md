@@ -48,12 +48,22 @@
      */
     public static final String APP_SECRET = "";
 
+
     /**
      *  Api绑定的域名
      */
     public static final String APP_HOST = "";
 
 **重要提示：APP_KEY和APP_SECRET是网关认证用户请求的钥匙，这两个配置如果保存在客户端，需要加密处理。** 
+
+另外有一个配置需要注意一下，如果Api提供商只提供HTTPS方式的调用，那么需要修改配置中的IS_HTTPS为true。Sdk将以忽略证书的方式来发起HTTPS请求，如果你能拿到服务器通商提供的证书，建议你修改HttpUtil类来采取SSL证书方式发起HTTPS请求。
+
+    /**
+     * 是否以HTTPS方式提交请求
+     * 本SDK采取忽略证书的模式,目的是方便大家的调试
+     * 为了安全起见,建议采取证书校验方式
+     */
+    public static final boolean IS_HTTPS = true;
 
 ## 3 SDK使用
 
