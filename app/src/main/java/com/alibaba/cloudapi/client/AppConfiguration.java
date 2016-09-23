@@ -26,17 +26,20 @@ public class AppConfiguration {
     /**
      *  Api绑定的的AppKey，可以在“阿里云官网”->"API网关"->"应用管理"->"应用详情"查看
      */
-    public static final String APP_KEY = "";
+    public static final String APP_KEY = "23449575";
 
     /**
      *  Api绑定的的AppSecret，用来做传输数据签名使用，可以在“阿里云官网”->"API网关"->"应用管理"->"应用详情"查看
      */
-    public static final String APP_SECRET = "";
+    public static final String APP_SECRET = "c89882eb2e62c97b88a5f216919171b2";
+
+    public static final boolean IS_HTTPS = false;
 
     /**
      *  Api绑定的域名
      */
-    public static final String APP_HOST = "";
+    //public static final String APP_HOST = "jisutianqi.market.alicloudapi.com";
+    public static final String APP_HOST = "dm-51.data.aliyun.com";
 
 
     /**

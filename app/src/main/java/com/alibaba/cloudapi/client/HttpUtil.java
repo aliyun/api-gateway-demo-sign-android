@@ -24,13 +24,23 @@ import okhttp3.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import android.util.Base64;
 
 import com.alibaba.cloudapi.client.constant.*;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by fred on 16/9/7.
@@ -39,6 +49,7 @@ public class HttpUtil {
     static HttpUtil instance = new HttpUtil();
     static Object lock = new Object();
     OkHttpClient client;
+    String httpSchema = HttpSchema.CLOUDAPI_HTTP;
 
 
     public static HttpUtil getInstance(){
@@ -54,13 +65,55 @@ public class HttpUtil {
     }
 
     private HttpUtil(){
-        client = new OkHttpClient();
+        if(AppConfiguration.IS_HTTPS){
+            httpSchema = HttpSchema.CLOUDAPI_HTTPS;
+
+            X509TrustManager xtm = new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    X509Certificate[] x509Certificates = new X509Certificate[0];
+                    return x509Certificates;
+                }
+            };
+
+            SSLContext sslContext = null;
+            try {
+                sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, new TrustManager[]{xtm}, new SecureRandom());
+
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            }
+            HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
+            client = new OkHttpClient.Builder().sslSocketFactory(sslContext.getSocketFactory() , xtm).hostnameVerifier(DO_NOT_VERIFY).build();
+        }
+        else {
+            client = new OkHttpClient();
+        }
+
+
+
     }
 
     public void httpGet(String path , Map<String , String> pathParams , Map<String , String> queryParams , Map<String , String> headerParams , Callback callback)
     {
 
-        Request request = this.buildHttpRequest(HttpSchema.CLOUDAPI_HTTPS , HttpMethod.CLOUDAPI_GET , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , null , ContentType.CLOUDAPI_CONTENT_TYPE_FORM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
+        Request request = this.buildHttpRequest(httpSchema , HttpMethod.CLOUDAPI_GET , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , null , ContentType.CLOUDAPI_CONTENT_TYPE_FORM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
         Call call = client.newCall(request);
         try {
             Response respnose = call.execute();
@@ -74,7 +127,8 @@ public class HttpUtil {
     public void httpPostForm(String path , Map<String , String> pathParams , Map<String , String> queryParams , Map<String , String> formParams , Map<String , String> headerParams , Callback callback)
     {
 
-        Request request = this.buildHttpRequest(HttpSchema.CLOUDAPI_HTTP , HttpMethod.CLOUDAPI_POST , AppConfiguration.APP_HOST , path , pathParams , queryParams , formParams , null , ContentType.CLOUDAPI_CONTENT_TYPE_FORM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
+
+        Request request = this.buildHttpRequest(httpSchema , HttpMethod.CLOUDAPI_POST , AppConfiguration.APP_HOST , path , pathParams , queryParams , formParams , null , ContentType.CLOUDAPI_CONTENT_TYPE_FORM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
         Call call = client.newCall(request);
         try {
             Response respnose = call.execute();
@@ -88,7 +142,7 @@ public class HttpUtil {
     public void httpPostBytes(String path , Map<String , String> pathParams , Map<String , String> queryParams , byte[] body , Map<String , String> headerParams , Callback callback)
     {
 
-        Request request = this.buildHttpRequest(HttpSchema.CLOUDAPI_HTTP , HttpMethod.CLOUDAPI_POST , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , body , ContentType.CLOUDAPI_CONTENT_TYPE_STREAM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
+        Request request = this.buildHttpRequest(httpSchema , HttpMethod.CLOUDAPI_POST , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , body , ContentType.CLOUDAPI_CONTENT_TYPE_STREAM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
         Call call = client.newCall(request);
         try {
             Response respnose = call.execute();
@@ -102,7 +156,7 @@ public class HttpUtil {
     public void httpPutBytes(String path , Map<String , String> pathParams , Map<String , String> queryParams , byte[] body , Map<String , String> headerParams , Callback callback)
     {
 
-        Request request = this.buildHttpRequest(HttpSchema.CLOUDAPI_HTTP , HttpMethod.CLOUDAPI_PUT , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , body , ContentType.CLOUDAPI_CONTENT_TYPE_STREAM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
+        Request request = this.buildHttpRequest(httpSchema , HttpMethod.CLOUDAPI_PUT , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , body , ContentType.CLOUDAPI_CONTENT_TYPE_STREAM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
         Call call = client.newCall(request);
         try {
             Response respnose = call.execute();
@@ -116,7 +170,7 @@ public class HttpUtil {
     public void httpDelete(String path , Map<String , String> pathParams , Map<String , String> queryParams , Map<String , String> headerParams , Callback callback)
     {
 
-        Request request = this.buildHttpRequest(HttpSchema.CLOUDAPI_HTTP , HttpMethod.CLOUDAPI_DELETE , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , null , ContentType.CLOUDAPI_CONTENT_TYPE_FORM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
+        Request request = this.buildHttpRequest(httpSchema , HttpMethod.CLOUDAPI_DELETE , AppConfiguration.APP_HOST , path , pathParams , queryParams , null  , null , ContentType.CLOUDAPI_CONTENT_TYPE_FORM , ContentType.CLOUDAPI_CONTENT_TYPE_JSON , headerParams);
         Call call = client.newCall(request);
         try {
             Response respnose = call.execute();
