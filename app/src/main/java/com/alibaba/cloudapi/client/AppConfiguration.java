@@ -26,20 +26,25 @@ public class AppConfiguration {
     /**
      *  Api绑定的的AppKey，可以在“阿里云官网”->"API网关"->"应用管理"->"应用详情"查看
      */
-    public static final String APP_KEY = "23449575";
+    public static final String APP_KEY = "";
 
     /**
      *  Api绑定的的AppSecret，用来做传输数据签名使用，可以在“阿里云官网”->"API网关"->"应用管理"->"应用详情"查看
      */
-    public static final String APP_SECRET = "c89882eb2e62c97b88a5f216919171b2";
+    public static final String APP_SECRET = "";
 
+    /**
+     * 是否以HTTPS方式提交请求
+     * 本SDK采取忽略证书的模式,目的是方便大家的调试
+     * 为了安全起见,建议采取证书校验方式
+     */
     public static final boolean IS_HTTPS = false;
 
     /**
      *  Api绑定的域名
      */
     //public static final String APP_HOST = "jisutianqi.market.alicloudapi.com";
-    public static final String APP_HOST = "dm-51.data.aliyun.com";
+    public static final String APP_HOST = "";
 
 
     /**
